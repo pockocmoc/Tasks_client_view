@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru, eng" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Список задач</title>
+<style>
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  margin-top: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 20px;
+}
+
+p {
+  margin: 0;
+}
+
+input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+label {
+  font-weight: bold;
+}
+
+select {
+  width: 200px;
+}
+</style>
+</head>
+<body>
+  <h2>Поиск задач по статусу:</h2>
+  <form action="/tasks/status" method="get">
+    <label for="status">Статус:</label>
+    <select id="status" name="status" required>
+      <option value="NOT_STARTED">Не начато</option>
+      <option value="IN_PROGRESS">В процессе</option>
+      <option value="COMPLETED">Завершено</option>
+    </select><br><br>
+    <input type="submit" value="Поиск">
+  </form>
+
+  <h2>Список задач:</h2>
+  <form action="/tasks" method="get">
+    <input type="submit" value="Показать все задачи">
+  </form>
+  <ul>
+    <li th:each="task : ${tasks}">
+      <p th:text="${task.description}"></p>
+      <p th:text="${task.status}"></p>
+      <p th:text="${task.creationTime}"></p>
+      <form th:action="@{/tasks/update/{id}(id=${task.id})}" method="post">
+        <label for="status">Новый статус:</label>
+        <select id="status" name="status" required>
+          <option value="NOT_STARTED">Не начато</option>
+          <option value="IN_PROGRESS">В процессе</option>
+          <option value="COMPLETED">Завершено</option>
+        </select>
+        <input type="submit" value="Изменить статус">
+      </form>
+
+      <form action="/tasks/delete" method="post">
+        <input type="hidden" name="taskId" th:value="${task.id}">
+        <input type="submit" value="Удалить задачу">
+      </form>
+    </li>
+  </ul>
+
+  <h2>Добавление новой задачи:</h2>
+  <form action="/tasks/add" method="post">
+    <label for="description">Описание:</label>
+    <input type="text" id="description" name="description" required><br><br>
+    <label for="status">Статус:</label>
+    <select id="status" name="status" required>
+      <option value="NOT_STARTED">Не начато</option>
+      <option value="IN_PROGRESS">В процессе</option>
+      <option value="COMPLETED">Завершено</option>
+    </select><br><br>
+    <input type="submit" value="Добавить задачу">
+  </form>
+</body>
+</html>
